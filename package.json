@@ -1,0 +1,27 @@
+{
+  "name": "fff-graphql-goodreads",
+  "version": "1.0.0",
+  "description": "",
+  "main": "schema.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "express-graphql": "^0.6.11",
+    "node-fetch": "^1.7.3",
+    "util": "^0.10.3",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alamnr/fff-graphql-goodreads.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alamnr/fff-graphql-goodreads/issues"
+  },
+  "homepage": "https://github.com/alamnr/fff-graphql-goodreads#readme"
+}
