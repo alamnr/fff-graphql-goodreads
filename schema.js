@@ -21,6 +21,21 @@ const x = fetch('https://www.goodreads.com/author/show.xml?id=4432&key=92WHmqw4R
 .then(parseXml)
 */
 
+function translate(lang, str){
+    // Google translate API is a paid service 
+    // To generate your own go here : https://cloud.google.com/translate/v2/getting started
+    const apiKey = 'AIzaSyBn-dvfndjfngvkxvjlxlkjvcbllkxcb'
+    const url = `https://googleapis.com/language/translate/v2?key=${apiKey}&source=en&target=${lang}&q=${encodeURIComponent(str)}`
+    return fetch(url)
+    .then(response=>response.json())
+    .then(parsedResponse=>
+    parsedResponse
+    .data
+    .translations[0]
+    .translatedText
+)
+}
+
 const BookType = new GraphQLObjectType({
     name: 'Book',
     description:'...',
@@ -29,7 +44,14 @@ const BookType = new GraphQLObjectType({
         title:{
             type: GraphQLString,
             //resolve: xml=>xml.title[0]
-            resolve: xml=>xml.GoodreadsResponse.book[0].title[0]
+            args:{
+                lang:{type: GraphQLString}
+            },
+           // resolve: xml=>xml.GoodreadsResponse.book[0].title[0]
+           resolve: (xml,args)=>{
+                const title =  xml.GoodreadsResponse.book[0].title[0]
+                return args.lang ? translate(args.lang, title) : title
+           }
         },
         isbn:{
             type: GraphQLString,
