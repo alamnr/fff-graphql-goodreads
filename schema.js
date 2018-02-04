@@ -35,7 +35,9 @@ function translate(lang, str){
     .translatedText
 )
 }
-
+const fetchAuthor = id=>fetch(`https://www.goodreads.com/author/show.xml?id=${args.id}&key=02BwEOStDUpVLAoHbkO1g`)
+.then(response => response.text())
+.then(parseXml)
 const BookType = new GraphQLObjectType({
     name: 'Book',
     description:'...',
@@ -57,6 +59,17 @@ const BookType = new GraphQLObjectType({
             type: GraphQLString,
             //resolve: xml => xml.isbn[0]
             resolve: xml => xml.GoodreadsResponse.book[0].isbn[0]
+        },
+        authors:{
+            type: GraphQLList(AuthorType),
+            resolve: xml => {
+                const authorElements = xml.GoodreadsResponse.book[0].author
+                const ids = authorElements.map(elem=>elem.id[0])
+                return Promise.all(ids.map(fetchAuthor))
+                    
+                    
+                }
+                    
         }
     })
 })
@@ -79,7 +92,7 @@ const AuthorType = new GraphQLObjectType({
                 const ids = xml.GoodreadsResponse.author[0].books[0].book.map(elem=> elem.id[0]._)
                 console.log('Fetching Books...'+ ids)
                 return Promise.all(ids.map(id=>
-                fetch(`https://www.goodreads.com/book/show/${id}.xml?key=92WHmqw4RL2nx76JiypQ`)
+                fetch(`https://www.goodreads.com/book/show/${id}.xml?key=02BwEOStDUpVLAoHbkO1g`)
                 .then(response => response.text())
                 .then(parseXml)))
             }
@@ -98,7 +111,7 @@ module.exports = new GraphQLSchema({
                 args:{
                     id:{type:GraphQLInt}
                 },
-                resolve:(root, args)=>fetch(`https://www.goodreads.com/author/show.xml?id=${args.id}&key=92WHmqw4RL2nx76JiypQ`)
+                resolve:(root, args)=>fetch(`https://www.goodreads.com/author/show.xml?id=${args.id}&key=02BwEOStDUpVLAoHbkO1g`)
                 .then(response => response.text())
                 .then(parseXml)
                 
